@@ -1,8 +1,8 @@
  import React from "react";
-import MovieRecommendations from "./components/MovieRecommendations";
+import MovieApp from "./components/MovieApp";
 
 function App() {
-  return <MovieRecommendations />;
+  return <MovieApp />;
 }
 
 export default App;
