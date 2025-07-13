@@ -4,6 +4,8 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import './MovieApp.css';
 
 const API_KEY = '15fc6247';
+const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+const BASE_URL = `${CORS_PROXY}http://www.omdbapi.com/`;
 
 const MovieRecommendations = () => {
   const [movies, setMovies] = useState([]);
@@ -12,14 +14,19 @@ const MovieRecommendations = () => {
   const [loading, setLoading] = useState(false);
 
   const fetchMovieDetails = async (imdbID) => {
-    const response = await axios.get('http://www.omdbapi.com/', {
-      params: {
-        i: imdbID,
-        apikey: API_KEY,
-        plot: 'full',
-      },
-    });
-    return response.data;
+    try {
+      const response = await axios.get(BASE_URL, {
+        params: {
+          i: imdbID,
+          apikey: API_KEY,
+          plot: 'full',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching movie details:', error);
+      return {};
+    }
   };
 
   useEffect(() => {
@@ -27,7 +34,7 @@ const MovieRecommendations = () => {
       if (!searchQuery) return;
       setLoading(true);
       try {
-        const response = await axios.get('http://www.omdbapi.com/', {
+        const response = await axios.get(BASE_URL, {
           params: {
             s: searchQuery,
             apikey: API_KEY,
