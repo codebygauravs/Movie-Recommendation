@@ -142,4 +142,4 @@ const MovieApp = () => {
   );
 };
 
-export default MovieRecommendations;
+export default MovieApp;
