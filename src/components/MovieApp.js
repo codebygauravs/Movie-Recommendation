@@ -1,93 +1,75 @@
- import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { AiOutlineSearch } from 'react-icons/ai';
-import './MovieApp.css';
+ import React, { useEffect, useState } from "react";
+import "./MovieApp.css";
 
-const TMDB_API_KEY = '644f849f9f1aaacb1f4f293e1dd378d5';
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-
-const MovieRecommendations = () => {
+const MovieApp = () => {
   const [movies, setMovies] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [expandedMovieId, setExpandedMovieId] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [sortOption, setSortOption] = useState('');
+  const [searchTerm, setSearchTerm] = useState("Avengers");
 
-  const sortMovies = (movies, option) => {
-    const sorted = [...movies];
-    switch (option) {
-      case 'title-asc':
-        return sorted.sort((a, b) => a.title.localeCompare(b.title));
-      case 'title-desc':
-        return sorted.sort((a, b) => b.title.localeCompare(a.title));
-      case 'year-desc':
-        return sorted.sort((a, b) => (b.release_date || '').localeCompare(a.release_date || ''));
-      case 'year-asc':
-        return sorted.sort((a, b) => (a.release_date || '').localeCompare(b.release_date || ''));
-      case 'rating-desc':
-        return sorted.sort((a, b) => b.vote_average - a.vote_average);
-      case 'rating-asc':
-        return sorted.sort((a, b) => a.vote_average - b.vote_average);
-      default:
-        return movies;
+  const API_KEY = "644f849f9f1aaacb1f4f293e1dd378d5";
+  const BASE_URL = "https://api.themoviedb.org/3";
+
+  const getMovies = async () => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchTerm}`
+      );
+      const data = await response.json();
+      if (data.results) {
+        setMovies(data.results);
+      } else {
+        setMovies([]);
+      }
+    } catch (error) {
+      console.error("Error fetching movies:", error);
     }
   };
 
   useEffect(() => {
-    const fetchMovies = async () => {
-      if (!searchQuery) return;
-      setLoading(true);
-      try {
-        const response = await axios.get(`${TMDB_BASE_URL}/search/movie`, {
-          params: {
-            api_key: TMDB_API_KEY,
-            query: searchQuery,
-          },
-        });
+    getMovies();
+    // eslint-disable-next-line
+  }, []);
 
-        const results = response.data.results || [];
-        setMovies(sortMovies(results, sortOption));
-      } catch (error) {
-        console.error('Error fetching movies from TMDB:', error);
-        setMovies([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMovies();
-  }, [searchQuery, sortOption]);
-
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const handleSearchSubmit = () => {
-    setSearchQuery(searchQuery.trim());
-  };
-
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
-  };
-
-  const toggleDescription = (movieId) => {
-    setExpandedMovieId(expandedMovieId === movieId ? null : movieId);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    getMovies();
   };
 
   return (
-    <div>
-      <h1>GAURAV MOVIES</h1>
-      <div className="search-bar">
+    <div className="container">
+      <h1>🎬 TMDB Movie Search</h1>
+
+      <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
-          placeholder="Search movies..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="search-input"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search for a movie..."
         />
-        <button onClick={handleSearchSubmit} className="search-button">
-          <AiOutlineSearch />
-        </button>
-      </div>
+        <button type="submit">Search</button>
+      </form>
 
-      {/* Sort Options */}
+      <div className="movie-list">
+        {movies.length > 0 ? (
+          movies.map((movie) => (
+            <div key={movie.id} className="movie-card">
+              <img
+                src={
+                  movie.poster_path
+                    ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                    : "https://via.placeholder.com/300x450?text=No+Image"
+                }
+                alt={movie.title}
+              />
+              <h3>{movie.title}</h3>
+              <p>{movie.release_date}</p>
+            </div>
+          ))
+        ) : (
+          <p>No movies found.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default MovieApp;
