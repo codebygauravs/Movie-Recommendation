@@ -207,6 +207,17 @@ body {
       gap: 10px;
       margin-bottom: 10px;
     }
+.sort-bar {
+  margin: 10px auto;
+  text-align: center;
+}
+
+.sort-select {
+  padding: 6px;
+  margin-left: 8px;
+  border-radius: 4px;
+}
+
   
     #sort-by,
     #genre {
