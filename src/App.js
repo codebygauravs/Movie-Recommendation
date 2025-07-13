@@ -1,8 +1,14 @@
- import React from "react";
-import MovieApp from "./components/MovieApp";
+ import React from 'react';
+import MovieApp from './components/MovieApp';
 
-function App() {
-  return <MovieApp />;
-}
+const App = () => {
+  return (
+   
+      <div className="App">
+            <MovieApp />
+      </div>
+    
+  );
+};
 
 export default App;
