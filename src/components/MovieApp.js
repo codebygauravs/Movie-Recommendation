@@ -12,6 +12,7 @@ const MovieRecommendations = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedMovieId, setExpandedMovieId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [sortOption, setSortOption] = useState(''); // New
 
   const fetchMovieDetails = async (imdbID) => {
     try {
@@ -29,6 +30,26 @@ const MovieRecommendations = () => {
     }
   };
 
+  const sortMovies = (movies, option) => {
+    const sorted = [...movies];
+    switch (option) {
+      case 'title-asc':
+        return sorted.sort((a, b) => a.Title.localeCompare(b.Title));
+      case 'title-desc':
+        return sorted.sort((a, b) => b.Title.localeCompare(a.Title));
+      case 'year-desc':
+        return sorted.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+      case 'year-asc':
+        return sorted.sort((a, b) => parseInt(a.Year) - parseInt(b.Year));
+      case 'rating-desc':
+        return sorted.sort((a, b) => parseFloat(b.imdbRating || 0) - parseFloat(a.imdbRating || 0));
+      case 'rating-asc':
+        return sorted.sort((a, b) => parseFloat(a.imdbRating || 0) - parseFloat(b.imdbRating || 0));
+      default:
+        return movies;
+    }
+  };
+
   useEffect(() => {
     const fetchMovies = async () => {
       if (!searchQuery) return;
@@ -43,11 +64,10 @@ const MovieRecommendations = () => {
 
         if (response.data.Response === 'True') {
           const movieList = response.data.Search;
-
           const detailedMovies = await Promise.all(
             movieList.map((movie) => fetchMovieDetails(movie.imdbID))
           );
-          setMovies(detailedMovies);
+          setMovies(sortMovies(detailedMovies, sortOption));
         } else {
           setMovies([]);
         }
@@ -60,7 +80,7 @@ const MovieRecommendations = () => {
     };
 
     fetchMovies();
-  }, [searchQuery]);
+  }, [searchQuery, sortOption]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -68,6 +88,10 @@ const MovieRecommendations = () => {
 
   const handleSearchSubmit = () => {
     setSearchQuery(searchQuery.trim());
+  };
+
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
   };
 
   const toggleDescription = (movieId) => {
@@ -90,11 +114,25 @@ const MovieRecommendations = () => {
         </button>
       </div>
 
+      {/* Sort Options */}
+      <div className="sort-bar">
+        <label htmlFor="sort" style={{ color: '#fff' }}>Sort By:</label>
+        <select id="sort" value={sortOption} onChange={handleSortChange} className="sort-select">
+          <option value="">-- Select --</option>
+          <option value="title-asc">Title A-Z</option>
+          <option value="title-desc">Title Z-A</option>
+          <option value="year-desc">Newest First</option>
+          <option value="year-asc">Oldest First</option>
+          <option value="rating-desc">Rating High to Low</option>
+          <option value="rating-asc">Rating Low to High</option>
+        </select>
+      </div>
+
       {loading ? (
         <p style={{ color: '#fff', textAlign: 'center' }}>Loading...</p>
       ) : movies.length > 0 ? (
         <div className="movie-wrapper">
-          {movies.map((movie) => (
+          {sortMovies(movies, sortOption).map((movie) => (
             <div key={movie.imdbID} className="movie">
               <img
                 src={movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/500'}
