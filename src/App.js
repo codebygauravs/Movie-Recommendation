@@ -1,13 +1,8 @@
- 
-import './App.css';
-import'./components/MovieApp.js';
-import MovieApp from './components/MovieApp.js';
+ import React from "react";
+import MovieRecommendations from "./components/MovieRecommendations";
+
 function App() {
-  return (
-    <div>
-    <MovieApp></MovieApp>
-    </div>
-  );
+  return <MovieRecommendations />;
 }
 
 export default App;
