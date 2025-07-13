@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AiOutlineSearch } from 'react-icons/ai';
 import './MovieApp.css';
 
-const MovieRecommendations = () => {
+const MovieApp = () => {
   const [movies, setMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('popularity.desc');
