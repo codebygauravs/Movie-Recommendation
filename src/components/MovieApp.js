@@ -17,7 +17,7 @@ const MovieRecommendations = () => {
         'https://api.themoviedb.org/3/genre/movie/list',
         {
           params: {
-            api_key: '0fa2853e7c4d6c8f146aba861c5e4a06',
+            api_key: '644f849f9f1aaacb1f4f293e1dd378d5',
           },
         }
       );
@@ -32,7 +32,7 @@ const MovieRecommendations = () => {
         'https://api.themoviedb.org/3/discover/movie',
         {
           params: {
-            api_key: '0fa2853e7c4d6c8f146aba861c5e4a06',
+            api_key: '644f849f9f1aaacb1f4f293e1dd378d5',
             sort_by: sortBy,
             page: 1,
             with_genres: selectedGenre,
@@ -62,7 +62,7 @@ const MovieRecommendations = () => {
       'https://api.themoviedb.org/3/search/movie',
       {
         params: {
-          api_key: '0fa2853e7c4d6c8f146aba861c5e4a06',
+          api_key: '644f849f9f1aaacb1f4f293e1dd378d5',
           query: searchQuery,
         },
       }
